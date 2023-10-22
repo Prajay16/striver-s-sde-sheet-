@@ -1,0 +1,25 @@
+lass Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+     vector<pair<int, int>> temp;
+     for(int i=0;i<matrix.size();i++){
+         for(int j=0;j<matrix[i].size();j++){
+             if(matrix[i][j]==0){
+                 temp.push_back(make_pair(i,j));
+             }
+         }
+     }
+     for(int a=0;a<temp.size();a++){
+         int row=temp[a].first;
+         int column=temp[a].second;
+         for(int b=0;b<matrix.size();b++){
+             for(int c=0;c<matrix[b].size();c++){
+                 if(b==row)
+                 matrix[b][c]=0;
+                 if(c==column)
+                 matrix[b][c]=0;
+             }
+         }
+     }   
+    }
+};
