@@ -1,0 +1,63 @@
+class Solution {
+public:
+    int existInRow[10][10] = {0};
+    int existInCol[10][10] = {0};
+    int existInBlock[10][10] = {0};
+    vector<pair<int,int> > emptyCells;
+    int blockCal(int x, int y) {
+        return (x/3) * 3 + (y/3);
+    }
+    
+    void populateCell(int x, int i, int j) {
+        existInRow[i][x]++;
+        existInCol[j][x]++;
+        existInBlock[blockCal(i,j)][x]++;
+    }
+
+    void unPopulateCell(int x, int i, int j) {
+        existInRow[i][x]--;
+        existInCol[j][x]--;
+        existInBlock[blockCal(i,j)][x]--;
+    }
+
+    bool isPossible(int x, int y, int c) {
+        return !existInRow[x][c] && !existInCol[y][c] && !existInBlock[blockCal(x,y)][c];
+    }
+
+    bool populateEmptyCells(int index, vector<vector<char>>& board) {
+        if(index>=emptyCells.size()) {
+            return true;
+        }
+        int cX = emptyCells[index].first;
+        int cY = emptyCells[index].second;
+        bool possible = false;
+        for(char c = '1'; c <= '9' && !possible; c++) {
+            if(isPossible(cX, cY, c-'0')) {
+                board[cX][cY] = c;
+                populateCell(c-'0', cX, cY);
+                possible = possible | populateEmptyCells(index+1, board);
+                if(!possible) {
+                    board[cX][cY] = '.';
+                    unPopulateCell(c-'0', cX, cY);
+                }
+            }
+        }
+        return possible;
+    }
+
+    void solveSudoku(vector<vector<char>>& board) {
+        for(int i=0;i<9;i++) {
+            for(int j=0;j<9;j++) {
+                if(board[i][j]!='.') {
+                    existInRow[i][board[i][j]-'0']++;
+                    existInCol[j][board[i][j]-'0']++;
+                    existInBlock[blockCal(i,j)][board[i][j]-'0']++;
+                } else {
+                    emptyCells.push_back({i,j});
+                }
+            }
+        }
+        populateEmptyCells(0, board);
+        return;
+    }
+};
